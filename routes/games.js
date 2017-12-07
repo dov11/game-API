@@ -2,7 +2,9 @@ const router = require('express').Router()
 const { Game } = require('../models')
 const passport = require('../config/auth')
 
+const authenticate = passport.authorize('jwt', { session: false })
 
+module.exports = io => {
 router.get('/games', (req, res, next) => {
   Game.find()
     // Newest games first
@@ -23,45 +25,70 @@ router.get('/games', (req, res, next) => {
       })
       .catch((error) => next(error))
   })
-  .post('/games', passport.authorize('jwt', { session: false }), (req, res, next) => {
+  .post('/games', authenticate, (req, res, next) => {
     let newGame = req.body
     newGame.authorId = req.account._id
-    console.log(newGame)
+    console.log(req.account._id)
 
     Game.create(newGame)
-      .then((game) => res.json(game))
+      .then((game) => {
+        io.emit('action', {
+          type: 'GAME_CREATED',
+          payload: game
+        })
+        res.json(game)
+      })
       .catch((error) => next(error))
   })
   .put('/games/:id', (req, res, next) => {
-    let newGame = req.body
+    let game = req.body
     // newGame.authorId = req.account._id
     const id = req.params.id
-    // Game.findById(id)
-      // .then((game) => {
-        // if (!game) { return next() }
-    //     // return game
-      // }).then(() => {
-        Game.findByIdAndUpdate(id, newGame)
-        .then(() => res.json({message: "updated"}))
+        Game.findByIdAndUpdate(id, game)
+        .then((game) => {
+          io.emit('action', {
+            type: 'GAME_UPDATED',
+            payload: game
+          })
+          res.json(game)
+        })
         .catch((error) => next(error))
       // })
       // .catch((error) => next(error))
   })
-  .patch('/games/:id', (req, res, next) => {
-    let updateGame = req.body
-    // const id = req.params.id
-        Game.update(updateGame)
-        // Game.findByIdAndUpdate(id, newGame)
-        .then(() => res.json({message: "patched"}))
-        .catch((error) => next(error))
-      // })
-      // .catch((error) => next(error))
-  })
-  .delete('/games/:id', (req, res, next) => {
+  .patch('/games/:id', authenticate, (req, res, next) => {
     const id = req.params.id
+    Game.findById(id)
+      .then((game) => {
+        if (!game) { return next() }
+        const newDate = req.body
+        game.update(newData)
+        // Game.findByIdAndUpdate(id, newGame)
+        .then((updateGame) => {
+          io.emit('action', {
+            type: 'GAME_UPDATED',
+            payload: updateGame
+          })
+         res.json(updateGame)
+       })
+     })
+        .catch((error) => next(error))
+      // })
+      // .catch((error) => next(error))
+  })
+  .delete('/games/:id', authenticate, (req, res, next) => {
+    const id = req.params.id
+    if (Game.authorId === req.account._id)
     Game.findByIdAndRemove(id)
-        .then(() => res.json({ message: 'Successfully deleted' }))
+        .then((id) => {
+          io.emit('action', {
+            type: 'GAME_REMOVED',
+            payload: id
+          })
+          res.json(id)
+        })
         .catch((error) => next(error))
   })
-
-module.exports = router
+  return router
+}
+// module.exports = router
