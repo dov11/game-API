@@ -15,9 +15,9 @@ Platform:
 
 npm manifest: 
   {
-    "name": "recipes-api",
+    "name": "games-api",
     "version": "1.0.0",
-    "description": "RESTful API to manage Recipes",
+    "description": "RESTful API to manage Games",
     "main": "index.js",
     "license": "MIT",
     "scripts": {

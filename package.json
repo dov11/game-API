@@ -1,13 +1,12 @@
 {
-  "name": "recipes-api",
+  "name": "games-api",
   "version": "1.0.0",
-  "description": "RESTful API to manage Recipes",
+  "description": "RESTful API to manage Games",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
     "start": "node .",
     "dev": "nodemon --inspect src/",
-    "seed": "node db/seed.js"
   },
   "dependencies": {
     "body-parser": "^1.18.2",
