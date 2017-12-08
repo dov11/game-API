@@ -21,9 +21,11 @@ module.exports = io => {
       .catch((error) => next(error))
     })
     .get('/games/:id', (req, res, next) => {
+			// console.log('requesting:', req.params.id);
       const id = req.params.id
       Game.findById(id)
         .then((game) => {
+          // console.log('got id');
           if (!game) { return next() }
           res.json(game)
         })
@@ -42,7 +44,7 @@ module.exports = io => {
         },
         {
         tileIndex: 2,
-        content: -1,        
+        content: -1,
         },
         {
         tileIndex: 3,
@@ -77,7 +79,7 @@ module.exports = io => {
       Game.create(newGame)
         .then((game) => {
           io.emit('action', {
-            type: 'CREATED_GAME',
+            type: 'GAME_CREATED',
             payload: game
           })
           res.json(game)
