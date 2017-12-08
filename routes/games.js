@@ -103,6 +103,7 @@ module.exports = io => {
         // .catch((error) => next(error))
     })
     .patch('/games/:id', authenticate, (req, res, next) => {
+      console.log(req.body)
       const id = req.params.id
       Game.findById(id)
         .then((game) => {
