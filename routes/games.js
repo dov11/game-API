@@ -71,22 +71,16 @@ module.exports = io => {
       const id = req.params.id
       Game.findById(id)
         .then((game) => {
-          // console.log(game)
           if (!game) { return next() }
           const newData = req.body
-          // console.log({$set: {'grid': req.body.tile}})
           const newGrid = game.grid.map(tile=>{
-            if (tile._id == req.body.tile._id){
-              console.log('found match')
-              return req.body.tile
+            if (tile._id == req.body._id){
+              return req.body
             }
             return tile
           })
-          // console.log (newGrid)
           Game.findByIdAndUpdate(id, {grid: newGrid}, {new: true})
-          // Game.findByIdAndUpdate(id, newGame)
           .then((game) => {
-            // console.log(updateGame)
             io.emit('action', {
               type: 'GAME_UPDATED',
               payload: game
@@ -95,8 +89,6 @@ module.exports = io => {
          })
        })
           .catch((error) => next(error))
-        // })
-        // .catch((error) => next(error))
     })
     .delete('/games/:id', authenticate, (req, res, next) => {
       const id = req.params.id
