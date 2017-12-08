@@ -23,7 +23,7 @@
     "socketio-jwt-auth": "^0.0.6"
   },
   "devDependencies": {
-    "nodemon": "^1.12.1",
+    "nodemon": "^1.12.5",
     "superagent": "^3.8.1"
   }
 }
