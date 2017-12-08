@@ -68,20 +68,30 @@ module.exports = io => {
         // .catch((error) => next(error))
     })
     .patch('/games/:id', authenticate, (req, res, next) => {
-      console.log(req.body)
       const id = req.params.id
       Game.findById(id)
         .then((game) => {
+          // console.log(game)
           if (!game) { return next() }
-          const newDate = req.body
-          game.update(newData)
+          const newData = req.body
+          // console.log({$set: {'grid': req.body.tile}})
+          const newGrid = game.grid.map(tile=>{
+            if (tile._id == req.body.tile._id){
+              console.log('found match')
+              return req.body.tile
+            }
+            return tile
+          })
+          // console.log (newGrid)
+          Game.findByIdAndUpdate(id, {grid: newGrid}, {new: true})
           // Game.findByIdAndUpdate(id, newGame)
-          .then((updateGame) => {
+          .then((game) => {
+            // console.log(updateGame)
             io.emit('action', {
               type: 'GAME_UPDATED',
-              payload: updateGame
+              payload: game
             })
-           res.json(updateGame)
+           res.json(game)
          })
        })
           .catch((error) => next(error))
