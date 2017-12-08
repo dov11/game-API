@@ -12,6 +12,7 @@ const app = express()
 const server = http.Server(app)
 const io = socketIO(server)
 io.use(socketAuth);
+// io.set('origins', 'http://localhost:3000')
 
 io.on('connect', socket => {
   socket.emit('ping', `Welcome to the server, ${socket.request.user.name}`)
@@ -46,6 +47,7 @@ app
     })
   })
 
-  .listen(port, () => {
-    console.log(`Server is listening on port ${port}`)
-  })
+  server.listen(3030)
+  // .listen(port, () => {
+  //   console.log(`Server is listening on port ${port}`)
+  // })
