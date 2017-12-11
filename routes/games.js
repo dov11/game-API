@@ -36,9 +36,9 @@ module.exports = io => {
     .post('/games', authenticate, (req, res, next) => {
       let newGame = req.body
       newGame.userId = req.account._id
-      newGame.players=[{
-        userId: req.account._id
-      }]
+      // newGame.players=[{
+      //   userId: req.account._id
+      // }]
       newGame.grid=getNewGrid()
 
       Game.create(newGame)
