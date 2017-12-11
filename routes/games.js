@@ -56,37 +56,61 @@ module.exports = io => {
       Game.findById(id)
         .then((game) => {
           if (!game) { return next() }
-          const newData = req.body
-          const newGrid = game.grid.map(tile=>{
-            if (tile._id == req.body._id){
-              return req.body
-            }
-            return tile
-          })
-          const newScores = game.players.map(player => {
-            if (player.userId +'' === req.body.userId) {
-              let newScore=0
-              switch(req.body.content) {
-                case -1 :
-                player.score = player.score - 10
-                  return player
-                default :
-                player.score = player.score + 1
-                return player
+          if (req.body.clicked) {
+            const newGrid = game.grid.map(tile=>{
+              if (tile._id == req.body._id){
+                return req.body
               }
-            }
-            return player
-          })
-          // const updatedGame = {...game, ...req.body}
-          // console.log(req.body)
-          Game.findByIdAndUpdate(id, {grid: newGrid, players: newScores}, {new: true})
-          .then((game) => {
-            io.emit('action', {
-              type: 'GAME_UPDATED',
-              payload: game
+              return tile
             })
-           res.json(game)
-         })
+            const newScores = game.players.map(player => {
+              if (player.userId +'' === req.body.userId) {
+                let newScore=0
+                switch(req.body.content) {
+                  case -1 :
+                  player.score = player.score - 10
+                    return player
+                  default :
+                  player.score = player.score + 1
+                  return player
+                }
+              }
+              return player
+            })
+            // const updatedGame = {...game, ...req.body}
+            Game.findByIdAndUpdate(id, {grid: newGrid, players: newScores}, {new: true})
+            .then((game) => {
+              io.emit('action', {
+                type: 'GAME_UPDATED',
+                payload: game
+              })
+             res.json(game)
+           })
+         }
+         else if (req.body.user_action){
+           if (req.body.user_action ==='user_joined'){
+             const players = game.players.map(player=>player.userId.toString())
+             // console.log(req.body.userId)
+             if (!players.includes(req.body.userId)){
+              let newPlayers = game.players.concat({
+                 userId: req.body.userId,
+                 score: 0,
+                 userName: req.body.userName
+               })
+               Game.findByIdAndUpdate(id, {players: newPlayers}, {new: true})
+               .then((game) => {
+                 io.emit('action', {
+                   type: 'GAME_UPDATED',
+                   payload: game
+                 })
+                res.json(game)
+              })
+            }
+           }
+           if (req.body.user_action ==='user_left'){
+             const playersL = game.players.map(player=>player.userId.toString())
+           }
+         }
        })
           .catch((error) => next(error))
     })
