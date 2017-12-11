@@ -108,7 +108,16 @@ module.exports = io => {
             }
            }
            if (req.body.user_action ==='user_left'){
-             const playersL = game.players.map(player=>player.userId.toString())
+             console.log('user_left')
+             let leftPlayers = game.players.filter(player=>player.userId.toString()!==req.body.userId)
+             Game.findByIdAndUpdate(id, {players: leftPlayers}, {new: true})
+             .then((game) => {
+               io.emit('action', {
+                 type: 'GAME_UPDATED',
+                 payload: game
+               })
+              res.json(game)
+            })
            }
          }
        })
