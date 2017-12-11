@@ -36,9 +36,9 @@ module.exports = io => {
     .post('/games', authenticate, (req, res, next) => {
       let newGame = req.body
       newGame.userId = req.account._id
-      newGame.players=[{
-        userId: req.account._id
-      }]
+      // newGame.players=[{
+      //   userId: req.account._id
+      // }]
       newGame.grid=getNewGrid()
 
       Game.create(newGame)
@@ -50,22 +50,6 @@ module.exports = io => {
           res.json(game)
         })
         .catch((error) => next(error))
-    })
-    .put('/games/:id', (req, res, next) => {
-      let game = req.body
-      // newGame.authorId = req.account._id
-      const id = req.params.id
-          Game.findByIdAndUpdate(id, game)
-          .then((game) => {
-            io.emit('action', {
-              type: 'GAME_UPDATED',
-              payload: game
-            })
-            res.json(game)
-          })
-          .catch((error) => next(error))
-        // })
-        // .catch((error) => next(error))
     })
     .patch('/games/:id', authenticate, (req, res, next) => {
       const id = req.params.id
