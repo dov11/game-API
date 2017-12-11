@@ -63,6 +63,26 @@ module.exports = io => {
               }
               return tile
             })
+            const availableTiles = newGrid.filter((tile) => {if (tile.clicked == 'false') return tile}).length
+            if (availableTiles<1) {
+              const wP = game.players
+  						.sort(function(a,b) {
+  							if (a.score>b.score){
+  								return -1
+  							}
+  							if (b.score>a.score){
+  								return 1
+  							}
+  							return 0
+  						})[0].userName
+              let wonGame={...game, winner: wP}
+              console.log(wonGame)
+              io.emit('action', {
+                type: 'WINNER_DETERMINED',
+                payload: wonGame
+              })
+               res.json(game)
+            }
             const newScores = game.players.map(player => {
               if (player.userId +'' === req.body.userId) {
                 let newScore=0
