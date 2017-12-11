@@ -94,7 +94,8 @@ module.exports = io => {
              if (!players.includes(req.body.userId)){
               let newPlayers = game.players.concat({
                  userId: req.body.userId,
-                 score: 0
+                 score: 0,
+                 userName: req.body.userName
                })
                Game.findByIdAndUpdate(id, {players: newPlayers}, {new: true})
                .then((game) => {
@@ -107,7 +108,7 @@ module.exports = io => {
             }
            }
            if (req.body.user_action ==='user_left'){
-
+             const playersL = game.players.map(player=>player.userId.toString())
            }
          }
        })
