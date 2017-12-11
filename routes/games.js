@@ -51,22 +51,6 @@ module.exports = io => {
         })
         .catch((error) => next(error))
     })
-    .put('/games/:id', (req, res, next) => {
-      let game = req.body
-      // newGame.authorId = req.account._id
-      const id = req.params.id
-          Game.findByIdAndUpdate(id, game)
-          .then((game) => {
-            io.emit('action', {
-              type: 'GAME_UPDATED',
-              payload: game
-            })
-            res.json(game)
-          })
-          .catch((error) => next(error))
-        // })
-        // .catch((error) => next(error))
-    })
     .patch('/games/:id', authenticate, (req, res, next) => {
       const id = req.params.id
       Game.findById(id)
