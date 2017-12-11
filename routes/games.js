@@ -63,7 +63,23 @@ module.exports = io => {
             }
             return tile
           })
-          Game.findByIdAndUpdate(id, {grid: newGrid}, {new: true})
+          const newScores = game.players.map(player => {
+            if (player.userId +'' === req.body.userId) {
+              let newScore=0
+              switch(req.body.content) {
+                case -1 :
+                player.score = player.score - 10
+                  return player
+                default :
+                player.score = player.score + 1
+                return player
+              }
+            }
+            return player
+          })
+          // const updatedGame = {...game, ...req.body}
+          // console.log(req.body)
+          Game.findByIdAndUpdate(id, {grid: newGrid, players: newScores}, {new: true})
           .then((game) => {
             io.emit('action', {
               type: 'GAME_UPDATED',

@@ -9,6 +9,7 @@ const { Schema } = mongoose
 
 const playerSchema = new Schema({
   userId: { type: Schema.Types.ObjectId, ref: 'users' },
+  score: { type: Schema.Types.Number, default: 0}
 });
 
 const gridSchema = new Schema({
