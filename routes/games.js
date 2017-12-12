@@ -83,8 +83,14 @@ module.exports = io => {
                 let newScore=0
                 switch(req.body.content) {
                   case -1 :
-                  player.score = player.score - 10
-                    return player
+                  if (req.body.clicked!=='right'){
+                     player.score = player.score - 10
+                     return player
+                   }
+                    else {
+                      player.score = player.score + 1
+                      return player
+                    }
                   default :
                   player.score = player.score + 1
                   return player
