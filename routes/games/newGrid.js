@@ -38,38 +38,38 @@ const getNewGrid = () => {
     },
   ]
 
-
-  const row = 5;
-	const col = 5;
-	const mines = 5;
-  let index = 1;
-  let randomGrid = []
-  let attemps = 0;
-  let tile
-
-  // generate mines
-  const minesArray = []
-  while (minesArray.length < mines) {
-    var randomnumber = Math.floor(Math.random() * (col * row) ) + 1;
-    if(minesArray.indexOf(randomnumber) > -1) continue;
-    minesArray[minesArray.length] = randomnumber;
-    if ( attemps > 200 ) return false
-    attemps++
-  }
-
-  // generate new empty grid
-  for (var r = 0; r < row; r++) {
-    for (var c = 0; c < col; c++) {
-      tile = {}
-      tile = { index: index }
-      if ( minesArray.includes(index) ) {
-        console.log(index, ' = mine');
-        tile.content = -1
-      }
-      randomGrid.push(tile)
-      index++;
-    }
-  }
+  // 
+  // const row = 5;
+	// const col = 5;
+	// const mines = 5;
+  // let index = 1;
+  // let randomGrid = []
+  // let attemps = 0;
+  // let tile
+  //
+  // // generate mines
+  // const minesArray = []
+  // while (minesArray.length < mines) {
+  //   var randomnumber = Math.floor(Math.random() * (col * row) ) + 1;
+  //   if(minesArray.indexOf(randomnumber) > -1) continue;
+  //   minesArray[minesArray.length] = randomnumber;
+  //   if ( attemps > 200 ) return false
+  //   attemps++
+  // }
+  //
+  // // generate new empty grid
+  // for (var r = 0; r < row; r++) {
+  //   for (var c = 0; c < col; c++) {
+  //     tile = {}
+  //     tile = { index: index }
+  //     if ( minesArray.includes(index) ) {
+  //       console.log(index, ' = mine');
+  //       tile.content = -1
+  //     }
+  //     randomGrid.push(tile)
+  //     index++;
+  //   }
+  // }
 
   newGrid = [
     {
@@ -175,7 +175,7 @@ const getNewGrid = () => {
   ]
 
 
-	console.log('randomGrid:', randomGrid);
+	// console.log('randomGrid:', randomGrid);
   // return randomGrid
   return newGrid
 }
