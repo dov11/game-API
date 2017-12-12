@@ -92,8 +92,14 @@ module.exports = io => {
                       return player
                     }
                   default :
-                  player.score = player.score + 1
-                  return player
+                  if (req.body.clicked!=='right') {
+                    player.score = player.score + 1
+                    return player
+                  }
+                  else {
+                    player.score = player.score - 1
+                    return player
+                  }
                 }
               }
               return player
