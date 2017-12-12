@@ -23,7 +23,6 @@ module.exports = io => {
       .catch((error) => next(error))
     })
     .get('/games/:id', (req, res, next) => {
-			// console.log('requesting:', req.params.id);
       const id = req.params.id
       Game.findById(id)
         .then((game) => {
@@ -36,9 +35,6 @@ module.exports = io => {
     .post('/games', authenticate, (req, res, next) => {
       let newGame = req.body
       newGame.userId = req.account._id
-      // newGame.players=[{
-      //   userId: req.account._id
-      // }]
       newGame.grid=getNewGrid()
 
       Game.create(newGame)
@@ -75,8 +71,7 @@ module.exports = io => {
   							}
   							return 0
   						})[0].userName
-              let wonGame={...game, winner: wP}
-              console.log(wonGame)
+              let wonGame={winner: wP}
               io.emit('action', {
                 type: 'WINNER_DETERMINED',
                 payload: wonGame
@@ -97,7 +92,6 @@ module.exports = io => {
               }
               return player
             })
-            // const updatedGame = {...game, ...req.body}
             Game.findByIdAndUpdate(id, {grid: newGrid, players: newScores}, {new: true})
             .then((game) => {
               io.emit('action', {
