@@ -23,7 +23,6 @@ module.exports = io => {
       .catch((error) => next(error))
     })
     .get('/games/:id', (req, res, next) => {
-			// console.log('requesting:', req.params.id);
       const id = req.params.id
       Game.findById(id)
         .then((game) => {
@@ -36,9 +35,6 @@ module.exports = io => {
     .post('/games', authenticate, (req, res, next) => {
       let newGame = req.body
       newGame.userId = req.account._id
-      // newGame.players=[{
-      //   userId: req.account._id
-      // }]
       newGame.grid=getNewGrid()
 
       Game.create(newGame)
@@ -63,6 +59,25 @@ module.exports = io => {
               }
               return tile
             })
+            const availableTiles = newGrid.filter((tile) => {if (tile.clicked == 'false') return tile}).length
+            if (availableTiles<1) {
+              const wP = game.players
+  						.sort(function(a,b) {
+  							if (a.score>b.score){
+  								return -1
+  							}
+  							if (b.score>a.score){
+  								return 1
+  							}
+  							return 0
+  						})[0].userName
+              let wonGame={winner: wP}
+              io.emit('action', {
+                type: 'WINNER_DETERMINED',
+                payload: wonGame
+              })
+               res.json(game)
+            }
             const newScores = game.players.map(player => {
               if (player.userId +'' === req.body.userId) {
                 let newScore=0
@@ -77,7 +92,6 @@ module.exports = io => {
               }
               return player
             })
-            // const updatedGame = {...game, ...req.body}
             Game.findByIdAndUpdate(id, {grid: newGrid, players: newScores}, {new: true})
             .then((game) => {
               io.emit('action', {

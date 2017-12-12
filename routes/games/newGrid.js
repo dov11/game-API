@@ -38,7 +38,7 @@ const getNewGrid = () => {
     },
   ]
 
-  // 
+  //
   // const row = 5;
 	// const col = 5;
 	// const mines = 5;
